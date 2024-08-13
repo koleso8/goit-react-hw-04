@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { fetchPhotos } from './services/searchAPI';
 import { useEffect } from 'react';
+
 import SearchPhotos from './components/SearchPhotos/SearchPhotos';
 import GalleryList from './components/GalleryList/GalleryList';
 import LoadMore from './components/LoadMore/LoadMore';
+import { MagnifyingGlass } from 'react-loader-spinner';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -45,6 +47,19 @@ const App = () => {
       </header>
       <main className="flex items-center flex-col">
         <GalleryList photos={photos} />
+
+        {isLoading && (
+          <MagnifyingGlass
+            visible={true}
+            height="80"
+            width="80"
+            ariaLabel="magnifying-glass-loading"
+            wrapperStyle={{}}
+            wrapperClass="magnifying-glass-wrapper"
+            glassColor="#c0efff"
+            color="#038cfc"
+          />
+        )}
         {photos.length > 0 ? <LoadMore loadMore={loadMore} /> : ''}
       </main>
     </>
