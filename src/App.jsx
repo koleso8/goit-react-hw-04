@@ -45,7 +45,7 @@ const App = () => {
       </header>
       <main className="flex items-center flex-col">
         <GalleryList photos={photos} />
-        <LoadMore loadMore={loadMore} />
+        {photos.length > 0 ? <LoadMore loadMore={loadMore} /> : ''}
       </main>
     </>
   );
