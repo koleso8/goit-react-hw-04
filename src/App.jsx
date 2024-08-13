@@ -5,7 +5,8 @@ import { useEffect } from 'react';
 import SearchPhotos from './components/SearchPhotos/SearchPhotos';
 import GalleryList from './components/GalleryList/GalleryList';
 import LoadMore from './components/LoadMore/LoadMore';
-import { MagnifyingGlass } from 'react-loader-spinner';
+import PhotosModal from './components/PhotosModal/PhotosModal';
+import Loader from './components/Loader/Loader';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,6 +14,9 @@ const App = () => {
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState('');
   const [photos, setPhotos] = useState([]);
+  const [showLoadMore, setShowLoadMore] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [currentModal, setCurrentModal] = useState({});
 
   useEffect(() => {
     if (!query) return;
@@ -22,6 +26,7 @@ const App = () => {
         setIsError(false);
         const data = await fetchPhotos({ query, page });
         setPhotos(prev => [...prev, ...data.results]);
+        setShowLoadMore(page < data.total_pages);
       } catch (error) {
         setIsError(true);
         console.log(error);
@@ -31,6 +36,15 @@ const App = () => {
     };
     fetchData();
   }, [query, page]);
+
+  const openModal = photo => {
+    setCurrentModal(photo);
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
 
   const handleChengeQuery = newQuery => {
     setPhotos([]);
@@ -46,21 +60,16 @@ const App = () => {
         <SearchPhotos handleChengeQuery={handleChengeQuery} />
       </header>
       <main className="flex items-center flex-col">
-        <GalleryList photos={photos} />
+        <PhotosModal
+          currentModal={currentModal}
+          modalIsOpen={modalIsOpen}
+          closeModal={closeModal}
+        />
 
-        {isLoading && (
-          <MagnifyingGlass
-            visible={true}
-            height="80"
-            width="80"
-            ariaLabel="magnifying-glass-loading"
-            wrapperStyle={{}}
-            wrapperClass="magnifying-glass-wrapper"
-            glassColor="#c0efff"
-            color="#038cfc"
-          />
-        )}
-        {photos.length > 0 ? <LoadMore loadMore={loadMore} /> : ''}
+        <GalleryList photos={photos} openModal={openModal} />
+
+        {isLoading && <Loader />}
+        {showLoadMore && <LoadMore loadMore={loadMore} />}
       </main>
     </>
   );
