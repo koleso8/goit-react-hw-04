@@ -69,7 +69,7 @@ const App = () => {
         <GalleryList photos={photos} openModal={openModal} />
 
         {isLoading && <Loader />}
-        {showLoadMore && <LoadMore loadMore={loadMore} />}
+        {showLoadMore && photos.length > 0 && <LoadMore loadMore={loadMore} />}
       </main>
     </>
   );
