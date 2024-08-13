@@ -7,6 +7,7 @@ import GalleryList from './components/GalleryList/GalleryList';
 import LoadMore from './components/LoadMore/LoadMore';
 import PhotosModal from './components/PhotosModal/PhotosModal';
 import Loader from './components/Loader/Loader';
+import ErrorMessage from './components/ErrorMessage/ErrorMessage';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +28,7 @@ const App = () => {
         const data = await fetchPhotos({ query, page });
         setPhotos(prev => [...prev, ...data.results]);
         setShowLoadMore(page < data.total_pages);
+        if (data.total_pages === 0) setIsError(true);
       } catch (error) {
         setIsError(true);
         console.log(error);
@@ -59,6 +61,7 @@ const App = () => {
       <header className="flex justify-center bg-cyan-600 p-4 mb-4">
         <SearchPhotos handleChengeQuery={handleChengeQuery} />
       </header>
+
       <main className="flex items-center flex-col">
         <PhotosModal
           currentModal={currentModal}
@@ -69,7 +72,10 @@ const App = () => {
         <GalleryList photos={photos} openModal={openModal} />
 
         {isLoading && <Loader />}
+
         {showLoadMore && photos.length > 0 && <LoadMore loadMore={loadMore} />}
+
+        {isError && <ErrorMessage />}
       </main>
     </>
   );
