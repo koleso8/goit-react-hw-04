@@ -73,9 +73,9 @@ const App = () => {
 
         {isLoading && <Loader />}
 
-        {showLoadMore && photos.length > 0 && <LoadMore loadMore={loadMore} />}
-
         {isError && <ErrorMessage />}
+
+        {showLoadMore && photos.length > 0 && <LoadMore loadMore={loadMore} />}
       </main>
     </>
   );
